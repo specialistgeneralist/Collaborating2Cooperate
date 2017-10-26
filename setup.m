@@ -1,0 +1,7 @@
+addpath(pwd)
+addpath([pwd '/lib-nets'])
+addpath([pwd '/lib-misc'])
+addpath([pwd '/SimRunner'])
+addpath([pwd '/lib-model'])
+addpath([pwd '/lib-viz'])
+addpath([pwd '/lib-test'])
