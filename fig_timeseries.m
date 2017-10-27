@@ -1,27 +1,45 @@
-function plot_timeseries(summary)
+function fig_timeseries(summary)
 
-% PLOT_TIMESERIES plot all replicates for each experiment in SUMMARY, with 
-% mean trace overlaid.
+%FIG_TIMESERIES Plot coloured frac C time-series line plot.
+%   FIG_TIMESERIES(SUMMARY) Addresses each experiment of SUMMARY and plots both 
+%   individual population fraction of cooperators as feint lines, and the 
+%   average over all replicates as a solid line. Colours are matched between 
+%   individual and average using primitive (default) colours.
+%
+%See also PLOT
 
+% .. prepare figure, fix position for reproducible size
 figure(1),clf
 set(gcf,'Color','w', 'Position', [3   699   747   286])
-clrs = get(gca,'colororder');
 hold on
+
+% .. get native colours, expand set if needed
+clrs = get(gca,'colororder');
+n_ex = numel(summary);
+if n_ex > size(clrs,1)
+    clrs0 = clrs;
+    while size(clrs,1) < n_ex
+        clrs = [clrs;clrs0];
+    end
+end
 
 % .. extract + plot
 n = summary(1).inputs.T;
 xx = [1:n]';
-for i = 1:numel(summary)
+for i = 1:n_ex
 
+    % .. data
     p = summary(i).inputs.p;
     e = summary(i).inputs.e;
     res = summary(i).results;
-    X = 1-[res.XT.xt];
+    X = 1-[res.XT.xt];          % fC = 1-fD
     m_x = mean(X,2);
 
+    % .. plot
     plot(xx, X, '-', 'LineWidth', 0.4, 'Color', [clrs(i,:) 0.05])
     plot(xx, m_x, '-', 'LineWidth', 2, 'Color', [clrs(i,:) 0.8])
 
+    % .. put exp. number LHS of plot for identification
     text(n*1.05, m_x(end), ['ex' num2str(i)])
 
 end
@@ -30,4 +48,3 @@ end
 set(gca,'FontSize',14, 'Ylim', [0 1], 'YTick', [0 0.25 0.5 0.75 1.0])
 ylabel('Cooperation Fraction')
 xlabel('Update')
-

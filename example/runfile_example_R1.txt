@@ -1,0 +1,23 @@
+% RUNFILE_EXAMPLE Example runfile for use with SimRunner.
+% ------------------------------------------------------- %                                      
+constant.ini.n = 32;       % integer, num agents in model
+constant.ini.fB = 0.50;    % fraction of strategy D types at t=0 
+% -------------------------------------------------------- %
+constant.k = 5;    % integer, max coalition size to form
+constant.b = 3;    % param for Game. (\beta = b/c)    =[] to force Axelrod payoffs
+constant.c = 4;    % param for Game. (\beta = b/c)    =[] to force Axelrod payoffs
+% -------------------------------------------------------- %                                     
+%constant.p = 0.5;   % coalitional update probability
+%constant.e = 0.1;  % Random graph E-R edge prob.
+%-------------------------------------------------------- %                                     
+constant.T = 100;  % updates to run for
+constant.R = 1;    % replicates (max should be size of nets in coalitional_library_fname file), if R=1 then we store rich information
+constant.R1_nper_store = 50;   % if R=1, then how many final periods' worth of strategy profiles to store
+% -------------------------------------------------------- %                                     
+constant.coalitional_library_fname = 'GraphLib_n32_k5_r50.mat';
+% -------------------------------------------------------- %
+variable(1).name = 'e';
+variable(1).values = [0.05 0.10 0.20];
+variable(2).name = 'p';
+variable(2).values = [0 0.1 0.3];
+

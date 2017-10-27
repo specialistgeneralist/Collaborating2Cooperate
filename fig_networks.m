@@ -10,7 +10,10 @@ function fig_networks(summary, NPER)
 %   spends as C over the last NPER of the run and creates G with nodes coloured 
 %   by a 5 level colour binning of %C.
 %
-%See also VIZ_GRAPH
+%   Output file names, for experiments 1..N (length of SUMMARY) are:
+%      net_ex1.dot, net_ex2.dot, ..., net_exN.dot
+%
+%See also VIS_GRAPH
 
 % .. node colours ~ follow reverse Matlab Bone for levels as given
 Cols = {'"#FFFFFF"' '"#DEE9E9"' '"#9DB7BB"' '"#6E788B"' '"#44425C"'};     % colour levels (reverse Matlab.bone)
@@ -47,7 +50,7 @@ for i = 1:n_ex
     vCol_id(ix_L4) = 5;
 
     % .. make net.dot, then rename
-    vis_graph(G, vCol_id, Cols)
+    adj2dot(G, vCol_id, Cols)
     system(sprintf('mv net.dot net_ex%.0f.dot', i));
 
 end
