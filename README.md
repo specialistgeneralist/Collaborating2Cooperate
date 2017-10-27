@@ -22,7 +22,7 @@ If you do not have the **parallel toolbox**, replace `parfor` with `for` in the 
 
 See the help documentation of `main_exp` provided below for *Examples* and *Figure replication* instructions.
 
-If you wish to produce a simple time-series plot of a given set of conditions, copy and adapt the file `example/params_example.m` and then (from the main directory) run with:
+If you wish to produce a simple time-series plot of a given set of conditions, **copy** and **adapt** the file `example/params_example.m` and then (from the main directory) run with:
 ```
 setup; cd example
 params_example_copy     % gives param-structure P to the workspace
@@ -43,15 +43,15 @@ See the instructions given in the help documentation of `main_exp` below.
 
 ### Contours figure 
 
-![Contours fig](https://github.com/specialistgeneralist/Collaborating2Cooperate/blob/master/contours.png)
+![Contours fig]( https://github.com/specialistgeneralist/Collaborating2Cooperate/blob/master/figs/contours.png )
 
 ### Networks figure (at benchmark conditions)
 
-![Networks fig](https://github.com/specialistgeneralist/Collaborating2Cooperate/blob/master/networks.png)
+![Networks fig]( https://github.com/specialistgeneralist/Collaborating2Cooperate/blob/master/figs/networks.png )
 
 
 ### Timeseries figure (at benchmark conditions)
-![Timeseries fig](https://github.com/specialistgeneralist/Collaborating2Cooperate/blob/master/timeseries.png)
+![Timeseries fig]( https://github.com/specialistgeneralist/Collaborating2Cooperate/blob/master/figs/timeseries.png )
 
 
 ## Main help file and instructions
