@@ -17,7 +17,11 @@ if isempty(M)
 end
 
 % .. else choose k first, then uniform pick within
-k = randsample(1:K, 1, true, p_dist);
+%   nb: we limit k to the upper bound found in the graph, as some graphs will 
+%   not have a connected sub-graph of a given size (under SW or Clique-only treatments)
+
+max_k = max(sM);	% largest size coalition
+k = randsample(1:max_k, 1, true, p_dist(1:max_k));
 ix = find(sM==k);
-i = choose_one(ix);
+i = choose_one(ix);		% fast implementation
 S = find(M(i,:));

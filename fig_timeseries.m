@@ -6,6 +6,11 @@ function fig_timeseries(summary)
 %   average over all replicates as a solid line. Colours are matched between 
 %   individual and average using primitive (default) colours.
 %
+%   Example
+%
+%   >> load expDisruption.mat
+%   >> fig_timeseries(summary)
+%
 %See also PLOT
 
 % .. prepare figure, fix position for reproducible size
@@ -36,8 +41,14 @@ for i = 1:n_ex
     m_x = mean(X,2);
 
     % .. plot
-    plot(xx, X, '-', 'LineWidth', 0.4, 'Color', [clrs(i,:) 0.05])
+    % .. smooth for R=1
+    if summary(i).inputs.R == 1
+        m_x = smoothdata(m_x, 'lowess');
+    else
+        plot(xx, X, '-', 'LineWidth', 0.4, 'Color', [clrs(i,:) 0.05])
+    end
     plot(xx, m_x, '-', 'LineWidth', 2, 'Color', [clrs(i,:) 0.8])
+
 
     % .. put exp. number LHS of plot for identification
     text(n*1.05, m_x(end), ['ex' num2str(i)])

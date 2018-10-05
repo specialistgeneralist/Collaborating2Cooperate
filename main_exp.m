@@ -89,15 +89,26 @@ function res = main_exp(P)
 %  2012-10-16: Initial coding
 %  2017-09-06: Update for SIxPD work.
 %  2017-10-25: Update for deployment.
+%  2018-09-03: Added support for Disruption experiment
 
 % -------------------------------------------------------- %
 % Note on strategy encoding
 %   We assume strat 0:C and 1:D throughout
 % -------------------------------------------------------- %
 
+% .. legacy
+if ~isfield(P, 'DisruptionActive')
+    P.DisruptionActive = false;
+end
+
 % // Initialise inputs and outputs
 P.PI = game_table(P.b, P.c);     % build game table
-P.prob_k = GetKpdf(P.k, P.p);    % prob. distro over k=1:P.k
+prob_k = GetKpdf(P.k, P.p);    % prob. distro over k=1:P.k
+if P.DisruptionActive
+        prob_k_disrupt = GetKpdf(P.k,P.Disruption.p);
+    else
+        prob_k_disrupt = prob_k;
+    end
 more_out_G = cell(1,1);
 more_out_fX = cell(1,1);
 
@@ -134,9 +145,22 @@ parfor r = 1:P.R
     c1 = 1;
     xt(1) = mean(x);
     while (t < P.T)
+
+        % .. check if p disruption-active
+        if P.DisruptionActive
+            if (t >= P.DisruptionTrigger.T) & (t < P.DisruptionTrigger.T+P.Disruption.t)
+                % .. abrupt change to p
+                S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k_disrupt);
+            else
+                % .. restore original settings
+                S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k);
+            end
+        else
+            S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k);
+        end
 	
         % .. an update
-        S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, P.prob_k);
+        %S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k);
         x1 = ApplyBetterResponse(G,x,S,P,pi);
         pi = UpdatePayoffs(G,x1,P);
         xt(t+1) = mean(x1);

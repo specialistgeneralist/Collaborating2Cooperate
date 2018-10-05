@@ -19,6 +19,7 @@ function [G,varargout] = MakeGraph(P)
 % 	 case 9 Ring, 4-regular, 100% rewiring to make random.
 % 	 case 10 Scale-free, avg. degree 4 using SFNG algorithm.
 % 	 case 11 Erdos_Renyi with no singletons
+% 	 case 12 Watts-Strogatz small-world (Matlab alg)
 %
 %See also REWIRE ERDOS_RENYI
 
@@ -26,6 +27,7 @@ function [G,varargout] = MakeGraph(P)
 %  12-11-01: changed 'sw' definition from 5% to 10% rewiring
 %  17-08-25: updated to provide an optional avg. degree
 %  17-09-06: added Erdos-Renyi graphs option (11)
+%  18-09-05: added support for WattsStrogatz (matlab) alg (12)
 
 L = round(sqrt(P.ini.n));		% side-length if required
 switch P.net_type
@@ -51,10 +53,12 @@ switch P.net_type
 		G = scalefree(P.ini.n,4);
     case 11 %'erdos-reny with no singletons'
         G = erdos_renyi(P.ini.n,P.e,1); % '1' ~ no singletons
+    case 12 %'matlab WattsStrogatz' set \beta=0.1
+        G = adjacency(WattsStrogatz(P.ini.n,P.k,0.1));
 	end
 
 if nargout > 1
-    avgD = mean(sum(G'));
+    avgD = mean(sum(G,2));
     varargout{1} = avgD;
 end
 

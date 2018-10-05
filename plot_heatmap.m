@@ -70,7 +70,7 @@ pp = [min(ps):MESH_STEP:max(ps)];
 ee = [min(es):MESH_STEP:max(es)];
 [Ps,Es] = meshgrid(pp,ee);
 try     % gridded underlying (p,e)
-    Cs = interp2(P', E', C', Ps', Es', 'spline');
+    Cs = interp2(P', E', C', Ps', Es', 'linear');
 catch   % if underlying (p,e) are not gridded, fall back to scattered interpolation
     F = scatteredInterpolant([p e], 1-m_x, 'linear');
     Cs = F(Ps,Es);

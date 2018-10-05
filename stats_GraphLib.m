@@ -14,6 +14,12 @@ function stats_GraphLib(Glib)
 %See also NUM_CONN_COMP
 
 N = numel(Glib);
+est_largest_k = max(Glib(end).lib(1).sM);
+% // This handles the case where a connected sub-graph of size k may not exist 
+% in the graph for whatever reason. We use the last (end) card as in most 
+% use-cases this will be the condition with the highest graph density, and so, 
+% largest connected sub-graphs.
+
 
 % for each library card (p,e)
 for i = 1:N
@@ -23,7 +29,7 @@ for i = 1:N
     % init
     z = zeros(num_graphs,1);
     avg_deg = z; dens = z; num_comp = z;
-    s_size_dist = repmat(z, 1, max(Glib(1).lib(1).sM));
+    s_size_dist = repmat(z, 1, est_largest_k);   % use last card in Glib as we assume this is likely the most dense
 
     % for each graph
     for r = 1:num_graphs
@@ -33,7 +39,7 @@ for i = 1:N
         num_comp(r,1) = num_conn_comp(full(G));
         avg_deg(r,1) = mean(sum(G,2));
         dens(r,1) = sum(G(1:end))/2 ./ (n*(n-1)/2);
-        s_size_dist(r,:) = hist(sM, 1:max(sM));
+        s_size_dist(r,:) = hist(sM, 1:est_largest_k);
     end
     
     m.e(i,1) = Glib(i).e;

@@ -1,6 +1,12 @@
 function fig_punchcard(SUMMARY, EX, NPER)
 
 %FIG_PUNCHCARD Make a 'punchcard' figure for strategic switching.
+%
+%   Example:
+%
+%   >> load exp017_p0p5_long.mat
+%   >> fig_punchcard(summary, 1, 499)
+%
 
 MALPHA = 0.4;
 CCLR = [0.2*ones(1,3) MALPHA];
