@@ -31,6 +31,7 @@ function res = main_exp(P)
 %      SimRunner('main_exp', 'runfile_example_R1.txt', 'test_R1');
 %      load test_R1.mat
 %      fig_networks(summary, 50)    % avg C colouring from last 50 updates
+%               .. produces net_ex[1-9].dot in pwd, use Graphviz to explore
 %      fig_timeseries(summary)      % avg C timeseries by exp.
 %
 %      % Run a multiple parameter study, many replicates, simple output,
