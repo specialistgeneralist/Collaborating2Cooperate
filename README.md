@@ -1,4 +1,4 @@
-Collaborating to cooperate in structured populations (Angus & Newton, 2018)
+Collaboration leads to cooperation on sparse networks (Angus & Newton, 2018)
 ===========================================================================
 
 *Codebase to run (in MATLAB) the numerical experiments reported in the paper, or replicate the main figures from the paper, or explore their data.*
@@ -59,7 +59,7 @@ See the instructions given in the help documentation of `main_exp` below.
 Recreate in Matlab with `help main_exp`.
 
 ```
-%MAIN_EXP Run coalitional PD experiments, Angus & Newton (2017).
+%MAIN_EXP Run coalitional PD experiments, Angus & Newton (2018).
 %   RES = MAIN_EXP(P) conducts a single experimental condition of the 
 %   Coalitional PD model, with input parameter structure P and producing 
 %   output structure RES.

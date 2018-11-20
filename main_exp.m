@@ -1,6 +1,6 @@
 function res = main_exp(P)
 
-%MAIN_EXP Run coalitional PD experiments, Angus & Newton (2017).
+%MAIN_EXP Run coalitional PD experiments, Angus & Newton (2018).
 %   RES = MAIN_EXP(P) conducts a single experimental condition of the 
 %   Coalitional PD model, with input parameter structure P and producing 
 %   output structure RES.
