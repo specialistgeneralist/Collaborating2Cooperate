@@ -14,6 +14,9 @@ function fig_contours(varargin)
 %
 %See also PLOT_HEATMAP
 
+% History
+%   2019-10-19 Added support for Large-N experiment
+
 NPOINTS = 500;
 
 if nargin > 0
@@ -50,6 +53,17 @@ switch TYPE
         'expSW_axelrod', 'Axelrod', ...
         'expSW_b32c33', '(32,33)'};
 
+    case 'large-N'
+         fprintf(' --> displaying Large-N data ...\n')
+    %     Large-N experiment
+    exp_list = { ...
+        'largeN_sparse_b2c3_t30k', '(2,3) lower', ...
+        'largeN_sparse_b3c4_t30k', '(3,4) lower', ...
+        'largeN_sparse_b4c5_t30k', '(4,5) lower', ...                
+        'largeN_sparse_b1p01c2p01_t30k', '(1.01,2.01) lower boundary', ...
+        'largeN_sparse_Axelrod_t30k', 'Axelrod', ...
+        'largeN_sparse_b32c33_t30k', '(32,33)'};
+
     otherwise
     %    Main paper
     exp_list = { ...
@@ -62,15 +76,23 @@ switch TYPE
 end
 
 % .. loop
-for i = [1:6]
+for i = [1:numel(exp_list)/2]
     % .. load dataset
     k = (i-1)*2+1;
     efile = exp_list{k};
     ename = exp_list{k+1};
-    eval(sprintf('load %s.mat', efile));
+    eval(sprintf('load %s.mat', efile));    % --> gives 'summary'
+    n = summary(1).inputs.ini.n;
+    e_min = summary(1).inputs.e;
+    e_max = summary(numel(summary)).inputs.e;
     % .. plot
     subplot(2,3,i)
         plot_heatmap(summary, NPOINTS)
-        % .. dress
-        set(gca,'Xlim', [0 0.9], 'Xtick', [0 0.3 0.6 0.9], 'Ytick', [0.05 0.15 0.3 0.4])
+        % .. dress: handle different N
+        switch n
+        case 32
+            set(gca,'Xlim', [0 0.9], 'Xtick', [0 0.3 0.6 0.9], 'Ytick', [0.05 0.15 0.3 0.4])
+        otherwise
+            set(gca,'Xlim', [0 0.9], 'Xtick', [0 0.3 0.6 0.9], 'Ytick', [e_min e_min+(e_max-e_min)/2 e_max])
+        end
 end

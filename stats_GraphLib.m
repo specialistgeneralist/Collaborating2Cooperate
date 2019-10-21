@@ -13,8 +13,19 @@ function stats_GraphLib(Glib)
 %
 %See also NUM_CONN_COMP
 
+% History:
+%  2019-10-16: Added support for run-time coalition building.
+
+is_pre_built = true;
+if ~isfield(Glib(1).lib, 'sM')
+    is_pre_built = false;
+end
+
 N = numel(Glib);
-est_largest_k = max(Glib(end).lib(1).sM);
+
+if is_pre_built
+    est_largest_k = max(Glib(end).lib(1).sM);
+end
 % // This handles the case where a connected sub-graph of size k may not exist 
 % in the graph for whatever reason. We use the last (end) card as in most 
 % use-cases this will be the condition with the highest graph density, and so, 
@@ -29,24 +40,30 @@ for i = 1:N
     % init
     z = zeros(num_graphs,1);
     avg_deg = z; dens = z; num_comp = z;
-    s_size_dist = repmat(z, 1, est_largest_k);   % use last card in Glib as we assume this is likely the most dense
+    if is_pre_built
+        s_size_dist = repmat(z, 1, est_largest_k);   % use last card in Glib as we assume this is likely the most dense
+    end
 
     % for each graph
     for r = 1:num_graphs
         G = Glib(i).lib(r).G;
-        sM = Glib(i).lib(r).sM;
         n = size(G,1);
         num_comp(r,1) = num_conn_comp(full(G));
         avg_deg(r,1) = mean(sum(G,2));
         dens(r,1) = sum(G(1:end))/2 ./ (n*(n-1)/2);
-        s_size_dist(r,:) = hist(sM, 1:est_largest_k);
+        if is_pre_built
+            sM = Glib(i).lib(r).sM;
+            s_size_dist(r,:) = hist(sM, 1:est_largest_k);
+        end
     end
     
     m.e(i,1) = Glib(i).e;
     m.avg_num_comp(i,1) = round(mean(num_comp),1);
     m.avg_density(i,1) = round(mean(dens),2, 'significant');
     m.avg_deg(i,1) = round(mean(avg_deg),1);
-    m.avg_S_size_dist(i,:) = round(mean(s_size_dist),0);
+    if is_pre_built
+        m.avg_S_size_dist(i,:) = round(mean(s_size_dist),0);
+    end
 
 end
 

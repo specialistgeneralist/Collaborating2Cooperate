@@ -13,16 +13,26 @@ function x_out = ApplyBetterResponse(G,x,S,P,pi_t)
 
 % History
 % 2012-10-16: Initial coding
+% 2019-09-26: Added support for CoalitionSwitchingCost
 
+% .. strategy choices (for 1 player or entire coalition)
 x_SA = x; x_SA(S) = 0;	% x if all i \in S play 0:C
 x_SB = x; x_SB(S) = 1;	% x if all i \in S play 1:D
 
+% .. get payoffs under options
 pi_A = UpdatePayoffs(G,x_SA,P);
 pi_B = UpdatePayoffs(G,x_SB,P);
 
-bA = all(pi_A(S) >= pi_t(S));	% is pi(A) >= pi(x) for all i \in S?
-bB = all(pi_B(S) >= pi_t(S));	% is pi(B) >= pi(x) for all i \in S?
+% .. check if k>1 coalition, allow for one-time CoalitionalSwitchingCost experiment to be applied
+if numel(S) > 1
+	bA = all(pi_A(S) - P.CoalitionalSwitchingCost >= pi_t(S));	% is pi(A) >= pi(x) for all i \in S?
+	bB = all(pi_B(S) - P.CoalitionalSwitchingCost >= pi_t(S));	% is pi(B) >= pi(x) for all i \in S?
+else
+	bA = all(pi_A(S) >= pi_t(S));	% is pi(A) >= pi(x) for all i \in S?
+	bB = all(pi_B(S) >= pi_t(S));	% is pi(B) >= pi(x) for all i \in S?
+end
 
+% .. apply logic
 if not(bA) & not(bB)	% neither at least as good, stay
 	x_out = x;
 elseif bA & not(bB)		% A as good, but not B, switch to A

@@ -20,7 +20,8 @@ function plot_heatmap(summary, NPOINTS, varargin)
 %See also INTERP2 SCATTEREDINTERPOLANT CONTOURF
 
 % .. handle options
-MESH_STEP = 0.01;
+MESH_STEP_e = 0.0005;
+MESH_STEP_p = 0.01;
 CONTOUR_Z = [0.1 0.3 0.5 0.7];
 NEWFIG    = 0;     % current fig(=0), or make new fig(=1)
 if nargin > 2
@@ -66,8 +67,8 @@ for i = 1:numel(ps)
 end
 
 % .. prepare smooth surface by interpolation
-pp = [min(ps):MESH_STEP:max(ps)];
-ee = [min(es):MESH_STEP:max(es)];
+pp = [min(ps):MESH_STEP_p:max(ps)];
+ee = [min(es):MESH_STEP_e:max(es)];
 [Ps,Es] = meshgrid(pp,ee);
 try     % gridded underlying (p,e)
     Cs = interp2(P', E', C', Ps', Es', 'linear');
@@ -77,7 +78,7 @@ catch   % if underlying (p,e) are not gridded, fall back to scattered interpolat
 end
 
 % .. plot
-if NEWFIG, figure(H),clf, end
+if NEWFIG, figure,clf, end
     set(gcf,'Color','w')
 cmap = flipud(bone);       % inverted bone colormap (light=low, dark=high)
 try
@@ -85,10 +86,12 @@ try
     set(gca, 'CLim', [0 1.0]);
     clabel(cC,ch, 'LabelSpacing', inf,  'FontSize', 9);
     colormap(cmap)
+catch
+    error('! we had a problem using ''contourf'' ... ')
 end
 
 % .. dress
-set(gca,'Xtick', ps, 'Ytick', es, 'Xlim', [0 max(ps)])
+set(gca,'Xtick', ps, 'Ytick', es, 'Xlim', [0 max(ps)], 'Ylim', [min(es) max(es)])
 set(gca,'FontSize', 12)
 shading flat
 grid on
@@ -98,7 +101,7 @@ if NEWFIG
     ylabel('e (graph density)')
 end
 % .. handle Axelrod case, or (b,c)
-if isempty(b)
+if isempty(b) | b==0
     title(sprintf('Axelrod',b,c))
 else
     title(sprintf('b=%.2f, c=%.2f',b,c))

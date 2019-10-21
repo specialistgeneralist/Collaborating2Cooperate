@@ -1,6 +1,6 @@
 function res = main_exp(P)
 
-%MAIN_EXP Run coalitional PD experiments, Angus & Newton (2018).
+%MAIN_EXP Run coalitional PD experiments, Angus & Newton (2019).
 %   RES = MAIN_EXP(P) conducts a single experimental condition of the 
 %   Coalitional PD model, with input parameter structure P and producing 
 %   output structure RES.
@@ -75,11 +75,13 @@ function res = main_exp(P)
 %    UpdatePayoffs  Calculate total payoffs to each agent in the game.
 %    ApplyBetterResponse        Return a vector of better-response strategies.
 %    ChooseCoalition_Binomial   Choose a coalition from the library.
+%    GetCoalitions3 Run-time coalition formation (large-N experiment)
 %
 %   Visualisation:
 %    fig_contours   Make all panels of avg C contour plot in (p,e) space.
 %    fig_networks   Write a .dot graph file for networks, nodes shaded by %C.
 %    fig_timeseries Plot coloured frac C time-series line plot.
+%    fig_punchcard  Make a 'punchcard' figure for strategic switching
 %
 %See also GAME_TABLE GETKPDF RANDSTREAM
 
@@ -91,15 +93,23 @@ function res = main_exp(P)
 %  2017-09-06: Update for SIxPD work.
 %  2017-10-25: Update for deployment.
 %  2018-09-03: Added support for Disruption experiment
+%  2019-10-11: Added support for run-time Coalition formation (for large N)
+%  2019-10-22: Updated help/doc area
 
 % -------------------------------------------------------- %
 % Note on strategy encoding
 %   We assume strat 0:C and 1:D throughout
 % -------------------------------------------------------- %
 
-% .. legacy
+% .. legacy, redundancy, experimentation
 if ~isfield(P, 'DisruptionActive')
     P.DisruptionActive = false;
+end
+if ~isfield(P, 'CoalitionalSwitchingCost')
+    P.CoalitionalSwitchingCost = 0;
+end
+if ~isfield(P, 'DoRunTimeCoalitionCreation')
+    P.DoRunTimeCoalitionCreation = 0;
 end
 
 % // Initialise inputs and outputs
@@ -129,10 +139,13 @@ parfor r = 1:P.R
 	s1 = RandStream.create('mt19937ar','seed',r);
     RandStream.setGlobalStream(s1);
 
-    % .. get graph, and coalitions
+    % .. get graph, and coalitions, if pre-made
     G = full(thisG.lib(r).G);
-    M = thisG.lib(r).M;
-    sM = thisG.lib(r).sM;
+    M = []; sM = [];
+    if P.DoRunTimeCoalitionCreation==0
+        M  = thisG.lib(r).M;
+        sM = thisG.lib(r).sM;
+    end
 
     % .. initialise strats
     x = InitStrats(P.ini.n, P.ini.fB);
@@ -147,21 +160,32 @@ parfor r = 1:P.R
     xt(1) = mean(x);
     while (t < P.T)
 
-        % .. check if p disruption-active
+        % .. Get a Coalition to work with
         if P.DisruptionActive
             if (t >= P.DisruptionTrigger.T) & (t < P.DisruptionTrigger.T+P.Disruption.t)
                 % .. abrupt change to p
-                S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k_disrupt);
+                if P.DoRunTimeCoalitionCreation
+                    S = GetCoalitions3(G, P, prob_k_disrupt);
+                else
+                    S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k_disrupt);
+                end
             else
                 % .. restore original settings
-                S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k);
+                if P.DoRunTimeCoalitionCreation
+                    S = GetCoalitions3(G, P, prob_k);
+                else
+                    S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k);
+                end
             end
         else
-            S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k);
+            if P.DoRunTimeCoalitionCreation
+                S = GetCoalitions3(G, P, prob_k);
+            else
+                S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k);
+            end
         end
 	
         % .. an update
-        %S = ChooseCoalition_Binomial(M,sM,P.k,P.ini.n, prob_k);
         x1 = ApplyBetterResponse(G,x,S,P,pi);
         pi = UpdatePayoffs(G,x1,P);
         xt(t+1) = mean(x1);

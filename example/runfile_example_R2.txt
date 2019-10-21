@@ -15,11 +15,15 @@ constant.R = 2;    % replicates (max should be size of nets in coalitional_libra
 constant.R1_nper_store = 500;   % if R=1, then how many final periods' worth of strategy profiles to store
 % -------------------------------------------------------- 
 % support for running the Disruption experiment
-constant.DisruptionActive = 0;           % switch on disruption phase
+constant.DisruptionActive = false;           % switch on disruption phase
 constant.DisruptionTrigger.T = 3000;      % period to start disruption
 constant.Disruption.p = 0.0;             % value of 'p' during disruption
 constant.Disruption.t = 1000;            % num periods to run disruption for
 % -------------------------------------------------------- %                                     
+% other experiments
+constant.DoRunTimeCoalitionCreation = false;
+constant.CoalitionalSwitchingCost = 0;
+% -------------------------------------------------------- %
 constant.coalitional_library_fname = 'GraphLib_n32_k5_r50.mat';
 % -------------------------------------------------------- %
 variable(1).name = 'e';

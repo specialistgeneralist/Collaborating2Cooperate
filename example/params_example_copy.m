@@ -15,13 +15,14 @@ P.T = 100;  % updates to run for
 P.R = 1;    % replicates (max should be size of nets in coalitional_library_fname file), if R=1 then we store rich information
 P.R1_nper_store = 50;   % if R=1, then how many final periods' worth of strategy profiles to store
 % -------------------------------------------------------- 
-% support for running the Disruption experiment
-constant.DisruptionActive = 0;           % switch on disruption phase
-constant.DisruptionTrigger.T = 3000;      % period to start disruption
-constant.Disruption.p = 0.0;             % value of 'p' during disruption
-constant.Disruption.t = 1000;            % num periods to run disruption for
+% support for various robustness experiments
+P.DisruptionActive = false;
+P.DoRunTimeCoalitionCreation = false;
+P.CoalitionalSwitchingCost = 0;
+% .. Disruption experiment params
+P.DisruptionTrigger.T = 3000;      % period to start disruption
+P.Disruption.p = 0.0;             % value of 'p' during disruption
+P.Disruption.t = 1000;            % num periods to run disruption for
 % -------------------------------------------------------- %                                     
 P.coalitional_library_fname = 'GraphLib_n32_k5_r50.mat';
 % -------------------------------------------------------- %
-
-

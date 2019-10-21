@@ -20,11 +20,20 @@ function [Glib] = MakeNetLib(N,R,K,E,varargin)
 %
 %See also MAKEGRAPH GETALLCOALITIONS_K
 
+% History
+%  2019-10-11: Add support for run-time only coaltion formation.
+
 % .. allow Watts-Strogatz style SW formation
 if nargin > 4
     P.net_type = varargin{1};
 else
     P.net_type = 11;        % random graph
+end
+% .. check if we should enumerate all coalitions here
+if nargin > 5
+    P.MakeCoalitions = varargin{2};
+else
+    P.MakeCoalitions = 1;
 end
 P.ini.n = N;
 coalitional_types = ones(P.ini.n,1);        % all capable of collective agency
@@ -34,8 +43,10 @@ for j = 1:numel(E)
     P.e = E(j);     % edge-prob
     P.k = round((P.ini.n-1)*P.e / 2);  % for SW case: avg. degree / 2
     t_lib.G = [];
-    t_lib.M = [];
-    t_lib.sM = [];
+    if P.MakeCoalitions
+        t_lib.M = [];
+        t_lib.sM = [];
+    end
 
 	parfor r = 1:R
 	
@@ -45,13 +56,14 @@ for j = 1:numel(E)
 		
         % .. make graph
         G = MakeGraph(P);
-
-        % .. get coalitions
-        [C,M,sM] = GetAllCoalitions_k(G, ones(P.ini.n,1), K);
-
         t_lib(r).G = sparse(G);
-        t_lib(r).M = M;
-        t_lib(r).sM = sM;
+
+        % .. get coalitions if required
+        if P.MakeCoalitions
+            [C,M,sM] = GetAllCoalitions_k(G, ones(P.ini.n,1), K);
+            t_lib(r).M = M;
+            t_lib(r).sM = sM;
+        end
 
     end
 
