@@ -1,0 +1,31 @@
+% INPUTS, manual                                                                                 
+% ------------------------------------------------------- %                                      
+constant.ini.n = 320;       % integer, num agents in model
+constant.ini.fB = 0.5;       % fraction of strategy D types at t=0 
+% -------------------------------------------------------- %
+constant.k = 5;            % integer, max coalition size to form
+constant.b = 32;           % param for Game. (\beta = b/c)    =0 to force Axelrod payoffs
+constant.c = 33;           % param for Game. (\beta = b/c)    =0 to force Axelrod payoffs
+% -------------------------------------------------------- %                                     
+%constant.p = 0.5;   % prob of coalition-ness %constant.e = 1.0;     % E-R edge prob.
+%constant.e = 1.0;
+%-------------------------------------------------------- %                                     
+constant.T = 30000;           % updates to run for (stopping condition?)
+constant.R = 10;             % replicates
+constant.R1_nper_store = 500;            % if R=1, then how many final periods' worth of strategy profiles to store
+% -------------------------------------------------------- %                                     
+constant.DisruptionActive = 0;           % switch on disruption phase
+constant.DisruptionTrigger.T = 3000;      % period to start disruption
+constant.Disruption.p = 0.0;             % value of 'p' during disruption
+constant.Disruption.t = 1000;            % num periods to run disruption for
+% -------------------------------------------------------- %                                     
+constant.coalitional_library_fname = 'GraphLib_n320_k5_r10_Sparse.mat';
+constant.DoRunTimeCoalitionCreation = 1;
+% -------------------------------------------------------- %
+variable(1).name = 'p';
+variable(1).values = [0:0.1:0.9];
+variable(2).name = 'e';
+variable(2).values = [1.9 3.2 4.6 6.2 7.8 9.3 10.9 12.4]./320;     % // for N=320
+%variable(2).values = [0.05:0.05:0.40];
+
+
