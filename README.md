@@ -3,7 +3,11 @@ Collaboration leads to cooperation on sparse networks (Angus & Newton, 2019)
 
 *Codebase to run (in MATLAB) the numerical experiments reported in the paper, or replicate the main figures from the paper, or explore their data.*
 
+*If using the code, please cite:
+SD Angus, JN Newton. (2019). v1.1.0 specialistgeneralist/Collaborating2Cooperate. Zenodo. DOI: 10.5281/zenodo.3567213*
+
 [![DOI](https://zenodo.org/badge/108404980.svg)](https://zenodo.org/badge/latestdoi/108404980)
+
 
 ## Getting started
 
